@@ -1,0 +1,7 @@
+<launch>
+
+  <node pkg="gimbal_pkg" type="color_detect_ros" name="colordetectros">
+  <node pkg="gimbal_pkg" type="controller" name="control">
+  <node pkg="rosserial_python" type="serial_node" name="serialnode">
+
+</launch>
