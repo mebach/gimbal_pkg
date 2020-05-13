@@ -4,6 +4,8 @@ import imutils
 import cv2
 from geometry_msgs.msg import Point
 from std_msgs.msg import Empty
+from matplotlib import pyplot as plt
+import numpy as np
 
 
 xc = 320  # the pixel location of the center of the screen, this will probably change
@@ -15,6 +17,8 @@ ex_old2 = 0
 ey_old = 0
 ey_old2 = 0
 
+time = 0
+
 class controller():
     def __init__(self):
         self.centroid_sub = rospy.Subscriber('centroid_topic',Point, self.centroid_receiver, queue_size=1000)
@@ -23,30 +27,46 @@ class controller():
         while not rospy.is_shutdown():
             print("while not")
 
+            #plt.plot(1,2, 'rp')
+            #plt.show()
+
             rospy.spin()
 
 
 
     def centroid_receiver(self, data): #this looks like the callback function. is this what is called everytime the node grabs something from the topic???
+        global ex_old
+        global ex_old2
+        global ey_old
+        global ey_old2
+        global time
+
+        time = time + 1
+
         x = data.x
         y = data.y
 
         ex = x - xc  #error, difference between the measured x value and the desired x value, which should be the center of the screen
         ey = y - yc
 
-        #ex_smooth = (ex + ex_old + ex_old2)/3
-        #ey_smooth = (ey + ey_old + ey_old2)/3
+        ex_smooth = round((ex + ex_old + ex_old2)/3)
+        ey_smooth = round((ey + ey_old + ey_old2)/3)
 
-        #ex_old2 = ex_old
-        #ex_old = ex
+        ex_old2 = ex_old
+        ex_old = ex
 
-        #ey_old2 = ey_old
-        #ey_old = ey
+        ey_old2 = ey_old
+        ey_old = ey
+
+        #plt.plot(time,ex, 'rp')
+        #plt.plot(time,ex_smooth, 'bp')
+        #plt.show()
+        #plt.clear()
 
         servo_msg = Point()
 
-        servo_msg.x = ex
-        servo_msg.y = ey
+        servo_msg.x = ex_smooth
+        servo_msg.y = ey_smooth
         self.servo_pub.publish(servo_msg)
 
         #this data is pretty noisy, so I will want to perform some kind of regression on it to smooth it out

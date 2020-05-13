@@ -19,8 +19,8 @@ class Color_detect:
 
         # Green Color
 
-        low_green = np.array([75, 125, 5]) # THESE RANGES ARE PRETTY GOOD FOR THE GREEN TAPE, IT MIGHT NOT BE GOOD FOR THE VAPORLITE
-        high_green = np.array([80, 255, 255])
+        low_green = np.array([75, 125, 5]) # GETTING CLOSER TO WHAT THE VAPORLITE COLOR SHOULD BE.... THE SURFACE IS STILL PRETTY REFLECTIVE SO THE GLARE COMING OFF THE PLANE REQUIRES A LARGER SATURATION RANGE
+        high_green = np.array([85, 255, 255])
         green_mask = cv2.inRange(hsv_frame, low_green, high_green)
         green = cv2.bitwise_and(frame, frame, mask=green_mask)
 
